@@ -4,4 +4,4 @@ project(Introduction)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(Introduction
-        "Task D/Darwin_Nunez.cpp")
+        "Timus-II(1401)/Problem1401.cpp")
