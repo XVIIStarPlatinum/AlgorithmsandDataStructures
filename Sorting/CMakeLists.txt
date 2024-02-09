@@ -4,4 +4,4 @@ project(Sorting)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(Sorting
-        "Task E/Cows.cpp")
+        "Task F/Number.cpp")
