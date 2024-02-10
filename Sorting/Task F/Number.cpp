@@ -10,7 +10,7 @@ int main(){
     string num;
 
     while(cin >> num){
-        if(num.length() == 0) break;
+        if(num.empty()) break;
         number.push_back(num);
     }
 
