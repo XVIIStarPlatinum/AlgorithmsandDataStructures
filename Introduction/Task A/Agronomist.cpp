@@ -3,20 +3,20 @@ using namespace std;
 
 int main(){
     int a;
-    int equal, mStart, mEnd, curStart, curEnd;
-    equal = mStart = mEnd = curStart = curEnd = 0;
+    int equal, maxStart, maxEnd, curStart, curEnd;
+    equal = maxStart = maxEnd = curStart = curEnd = 0;
     cin >> a;
     int x[a];
     for(int i = 0; i < a; i++){
         cin >> x[i];
     }
     for(int i = 0; i < a; i++){
-        if(x[i-1] == x[i]){
+        if(x[i] == x[i-1]){
             equal++;
             if(equal == 3){
-                if(curEnd - curStart > mEnd - mStart){
-                    mEnd = curEnd;
-                    mStart = curStart;
+                if(curEnd - curStart > maxEnd - maxStart){
+                    maxEnd = curEnd;
+                    maxStart = curStart;
                 }
                 curStart = i - 1;
                 equal = 2;
@@ -26,10 +26,10 @@ int main(){
         }
         curEnd = i;
     }
-    if(curEnd - curStart > mEnd - mStart){
-        mEnd = curEnd;
-        mStart = curStart;
+    if(curEnd - curStart > maxEnd - maxStart){
+        maxEnd = curEnd;
+        maxStart = curStart;
     }
-    cout << mStart + 1 << " " << mEnd + 1 << endl;
+    cout << maxStart + 1 << " " << maxEnd + 1 << "\n";
     return 0;
 }
