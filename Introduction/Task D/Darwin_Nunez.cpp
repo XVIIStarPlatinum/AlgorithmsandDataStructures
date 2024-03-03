@@ -1,17 +1,19 @@
 #include<bits/stdc++.h>
-#include<iostream>
 using namespace std;
 
-int main(){
-    int a, b, c, d, k, tmp = 0;
+int main() {
+    int a, b, c, d;
+    long long k;
     cin >> a >> b >> c >> d >> k;
-    for(int i = 1; i <= k; i++) {
-        tmp = (a * b - c);
-        tmp = max(tmp, 0);
-        tmp = min(d, tmp);
-        if(tmp == a) break;
-        a = tmp;
+    if(a == a * b - c) {
+        cout << a;
+    } else if(k > d) {
+        cout << ((a * b - c <= a) ? 0 : d);
+    } else {
+        for(int i = 1; i <= k; i++) {
+            a = min(d, max(a * b - c, 0));
+        }
+        cout << a << endl;
     }
-    cout << tmp << endl;
     return 0;
 }
