@@ -7,20 +7,20 @@ int main(){
     cin >> str;
     bool caught;
     stack<char> st;
-    int animal = 0, trap = -1;
+    int animal = 0, trap = 0;
     stack<int> animals, traps;
-    const int a = str.length() / 2;
-    int cage[a];
+    vector<int> a;
     for(char c : str){
-        (islower(c)) ? animals.push(++animal) : traps.push(++trap);
+        (islower(c)) ? animals.push(++animal) : traps.push(++trap), a.push_back(0);
         if(st.empty()){
             st.push(c);
         } else {
-            caught = (isupper(st.top()) && islower(c) || islower(st.top()) && isupper(c))
+            caught = (isupper(st.top()) && islower(c)
+                   || islower(st.top()) && isupper(c))
                    && tolower(st.top()) == tolower(c);
             if(caught){
-                cage[traps.top()] = animals.top();
                 st.pop();
+                a.at(traps.top()-1) = animals.top();
                 traps.pop();
                 animals.pop();
             } else {
@@ -28,13 +28,15 @@ int main(){
             }
         }
     }
-    if(st.empty()) {
-        cout << "Possible" << "\n";
-        for(int i = 0; i < a; i++){
-            cout << cage[i] << " ";
-        }
+    if(!st.empty()) {
+        cout << "Impossible";
     } else {
-        cout << "Impossible" << endl;
+        cout << "Possible\n";
+        for(int i : a){
+            if(i != 0){
+                cout << i << " ";
+            }
+        }
     }
     return 0;
 }
