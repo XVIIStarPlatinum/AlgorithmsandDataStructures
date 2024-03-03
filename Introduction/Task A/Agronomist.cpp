@@ -1,35 +1,28 @@
-#include<iostream>
+#include<bits/stdc++.h>
 using namespace std;
 
 int main(){
-    int a;
-    int equal, maxStart, maxEnd, curStart, curEnd;
-    equal = maxStart = maxEnd = curStart = curEnd = 0;
-    cin >> a;
-    int x[a];
-    for(int i = 0; i < a; i++){
+    int n, eq, maxLeft, maxRight, curLeft, curRight;
+    eq = maxLeft = maxRight = curLeft = curRight = 0;
+    cin >> n;
+    int x[n];
+    for(int i = 0; i < n; i++){
         cin >> x[i];
-    }
-    for(int i = 0; i < a; i++){
-        if(x[i] == x[i-1]){
-            equal++;
-            if(equal == 3){
-                if(curEnd - curStart > maxEnd - maxStart){
-                    maxEnd = curEnd;
-                    maxStart = curStart;
-                }
-                curStart = i - 1;
-                equal = 2;
+        if(x[i] == x[i - 1]){
+            eq++;
+            if(eq == 3){
+                maxLeft = (curRight - curLeft > maxRight - maxLeft) ? curLeft: maxLeft;
+                maxRight = (curRight - curLeft > maxRight - maxLeft) ? curRight : maxRight;
+                curLeft = i - 1;
+                eq = 2;
             }
         } else {
-            equal = 1;
+            eq = 1;
         }
-        curEnd = i;
+        curRight = i;
     }
-    if(curEnd - curStart > maxEnd - maxStart){
-        maxEnd = curEnd;
-        maxStart = curStart;
-    }
-    cout << maxStart + 1 << " " << maxEnd + 1 << "\n";
+    maxLeft = (curRight - curLeft > maxRight - maxLeft) ? curLeft : maxLeft;
+    maxRight = (curRight - curLeft > maxRight - maxLeft) ? curRight : maxRight;
+    cout << maxLeft + 1 << " " << maxRight + 1 << "\n";
     return 0;
 }
