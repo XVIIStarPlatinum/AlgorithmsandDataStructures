@@ -1,59 +1,57 @@
 #include<bits/stdc++.h>
-#include<string>
 using namespace std;
 
-int main(){
-    int hash = 0;
-    map<string, int> hashMap;
+struct val_depth{
+    int value;
+    int depth;
+};
 
-    const int CACHE_PERIOD = 1000;
-    vector<map<int,int>> callStack;
-    callStack.emplace_back();
+int main(){
+    int depth = 0;
+    stack<unordered_set<string>> changedVal;
+    map<string, stack<val_depth>> hashMap;
+    changedVal.emplace(0);
     string input;
     while(cin >> input){
-        if(input == "-") {
-            break;
-        }
+//        if(input == "&") {
+//            break;
+//        }
         if(input == "{") {
-            if(callStack.size() % CACHE_PERIOD == 0){
-                map<int,int> tmp;
-                for(int i = (int) callStack.size() - CACHE_PERIOD; i < callStack.size(); i++){
-                    for(auto &var : callStack[i]){
-                        tmp[var.first] = var.second;
-                    }
-                }
-                callStack.emplace_back(tmp);
-            } else {
-                callStack.emplace_back();
-            }
+            depth++;
+            changedVal.emplace(0);
         } else if(input == "}"){
-            callStack.pop_back();
-        } else {
-            int del = (int) input.find('=');
-            string left = input.substr(0, del);
-            string right = input.substr(del + 1);
-            if(hashMap.count(left) == 0)
-                hashMap[left] = hash++;
-            int lHash = hashMap[left];
-            if(right.find_first_of("0123456789") != string::npos) {
-                callStack.back()[lHash] = stoi(right);
-            } else {
-                if(hashMap.count(right) == 0){
-                    hashMap[right] = hash++;
+            depth--;
+            for(const string &k: changedVal.top())
+                if(!hashMap[k].empty() && hashMap[k].top().depth > depth){
+                    hashMap[k].pop();
                 }
-                int rHash = hashMap[right];
-                for(int i = callStack.size() - 1; i >= 0; i--){
-                    if(callStack[i].count(rHash)) {
-                        callStack.back()[lHash] = callStack[i][rHash];
-                        cout << callStack[i][rHash] << "\n";
-                        break;
-                    }
-                    if(i % CACHE_PERIOD == 0){
-                        callStack.back()[lHash] = 0;
-                        cout << "0" << "\n";
-                    }
+            changedVal.top().clear();
+            changedVal.pop();
+        } else if(!input.empty()){
+            char equalSign = (int) input.find('=');
+            string lHash = input.substr(0, equalSign);
+            string rHash = input.substr(equalSign + 1, input.length());
+            if(hashMap[lHash].empty()) {
+                hashMap[lHash].push({0, depth});
+            }
+            if(isdigit(rHash[0]) || rHash[0] == '-'){
+                if(hashMap[lHash].top().depth < depth){
+                    hashMap[lHash].push({stoi(rHash), depth});
+                } else {
+                    hashMap[lHash].top() = {stoi(rHash), depth};
+                }
+            } else {
+                if(hashMap[rHash].empty()){
+                    hashMap[rHash].push({0, depth});
+                }
+                cout << hashMap[rHash].top().value << "\n";
+                if(hashMap[lHash].top().depth < depth){
+                    hashMap[lHash].push({hashMap[rHash].top().value, depth});
+                } else {
+                    hashMap[lHash].top() = {hashMap[rHash].top().value, depth};
                 }
             }
+            changedVal.top().insert(lHash);
         }
     }
     return 0;
