@@ -1,5 +1,4 @@
 #include<bits/stdc++.h>
-#include<iostream>
 using namespace std;
 
 int main(){
@@ -10,7 +9,7 @@ int main(){
     int animal = 0, trap = 0;
     stack<int> animals, traps;
     vector<int> a;
-    for(char c : str){
+    for(char c : str) {
         (islower(c)) ? animals.push(++animal) : traps.push(++trap), a.push_back(0);
         if(st.empty()){
             st.push(c);

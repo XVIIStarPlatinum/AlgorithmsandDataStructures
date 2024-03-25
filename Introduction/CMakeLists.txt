@@ -4,4 +4,4 @@ project(Introduction)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(Introduction
-        "Task C/Config_File.cpp")
+        "Task A/Agronomist.cpp")
