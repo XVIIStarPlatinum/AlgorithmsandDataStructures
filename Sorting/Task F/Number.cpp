@@ -1,22 +1,24 @@
-#include <bits/stdc++.h>
-using namespace std;
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
 
-bool comparator(const string &s1, const string &s2) {
+bool comparator(const std::string &s1, const std::string &s2) {
     return s1 + s2 > s2 + s1;
 }
 
 int main(){
-    vector<string> number;
-    string num;
+    std::vector<std::string> number;
+    std::string num;
 
-    while(cin >> num){
+    while(std::cin >> num){
         if(num.empty()) break;
         number.push_back(num);
     }
 
-    sort(number.begin(), number.end(), comparator);
+    std::sort(number.begin(), number.end(), comparator);
     for(const auto & i : number){
-        cout << i;
+        std::cout << i;
     }
     return 0;
 }

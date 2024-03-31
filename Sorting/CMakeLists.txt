@@ -4,4 +4,4 @@ project(Sorting)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(Sorting
-        "Task F/Number.cpp")
+        "Timus-IV(1604)/Problem1604.cpp")
