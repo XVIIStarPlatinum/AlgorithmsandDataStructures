@@ -62,7 +62,7 @@ int main() {
         std::cout << arr[i] << " ";
     }
     std::vector<int> vec(arr, arr + n);
-    std::cout << "\nVector to heap (custom):\n";
+    std::cout << "\nVector to heap (custom-made):\n";
     n = (int) (vec.end() - vec.begin());
     buildMaxHeap(vec.begin(), vec.end());
     for(int i = 0; i < n; i++) {
