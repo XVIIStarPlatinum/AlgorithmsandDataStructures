@@ -11,22 +11,22 @@ int main() {
     for(int i = 0; i < n; ++i) {
         std::cin >> balls[i];
     }
-    std::stack<int> st;
+    std::stack<int> cue;
     for(int i = 1; i <= n; i++) {
-        st.push(i);
-        while(!st.empty() && balls[p] == st.top()) {
+        cue.push(i);
+        while(!cue.empty() && balls[p] == cue.top()) {
             p++;
-            st.pop();
+            cue.pop();
         }
     }
     while(p < n) {
-        if(balls[p] == st.top()) {
+        if(balls[p] == cue.top()) {
             p++;
-            st.pop();
+            cue.pop();
         } else {
             break;
         }
     }
-    (st.empty()) ? std::cout << "Not a proof" : std::cout << "Cheater";
+    (cue.empty()) ? std::cout << "Not a proof" : std::cout << "Cheater";
     return 0;
 }
