@@ -11,30 +11,30 @@ int randomGenerator(size_t min, size_t max) {
 struct Node {
     int data;
     int priority;
-    Node *l, *r;
+    Node *left, *right;
     explicit Node(int d) {
         data = d;
         priority = (int) randomGenerator(1, 100);
-        l = nullptr;
-        r = nullptr;
+        left = nullptr;
+        right = nullptr;
     }
 };
 class CartesianTree {
 
 public:
     static void rotateLeft(Node *&root) {
-        Node *R = root->r;
-        Node *X = root->r->l;
-        R->l = root;
-        root->r = X;
-        root = R;
+        Node *Right = root->right;
+        Node *Key = root->right->left;
+        Right->left = root;
+        root->right = Key;
+        root = Right;
     }
     static void rotateRight(Node *&root) {
-        Node *L = root->l;
-        Node *Y = root->l->r;
-        L->r = root;
-        root->l = Y;
-        root = L;
+        Node *Left = root->left;
+        Node *Priority = root->left->right;
+        Left->right = root;
+        root->left = Priority;
+        root = Left;
     }
     void insertNode(Node *&root, int d) {
         if (root == nullptr) {
@@ -42,13 +42,13 @@ public:
         }
         else {
             if (d < root->data) {
-                insertNode(root->l, d);
-                if (root->l && root->l->priority > root->priority) {
+                insertNode(root->left, d);
+                if (root->left && root->left->priority > root->priority) {
                     rotateRight(root);
                 }
             } else {
-                insertNode(root->r, d);
-                if (root->r && root->r->priority > root->priority) {
+                insertNode(root->right, d);
+                if (root->right && root->right->priority > root->priority) {
                     rotateLeft(root);
                 }
             }
@@ -62,32 +62,32 @@ public:
             return true;
         }
         if (key < root->data) {
-            return searchNode(root->l, key);
+            return searchNode(root->left, key);
         }
-        return searchNode(root->r, key);
+        return searchNode(root->right, key);
     }
     void deleteNode(Node *&root, int key) {
         if (root == nullptr) {
             return;
         }
         if (key < root->data) {
-            deleteNode(root->l, key);
+            deleteNode(root->left, key);
         } else if (key > root->data) {
-            deleteNode(root->r, key);
+            deleteNode(root->right, key);
         } else {
-            if (root->l == nullptr && root->r == nullptr) {
+            if (root->left == nullptr && root->right == nullptr) {
                 delete root;
                 root = nullptr;
-            } else if (root->l && root->r) {
-                if (root->l->priority < root->r->priority) {
+            } else if (root->left && root->right) {
+                if (root->left->priority < root->right->priority) {
                     rotateLeft(root);
-                    deleteNode(root->l, key);
+                    deleteNode(root->left, key);
                 } else {
                     rotateRight(root);
-                    deleteNode(root->r, key);
+                    deleteNode(root->right, key);
                 }
             } else {
-                Node *child = (root->l) ? root->l : root->r;
+                Node *child = (root->left) ? root->left : root->right;
                 Node *curr = root;
                 root = child;
                 delete curr;
@@ -97,14 +97,14 @@ public:
     void displayTreap(Node *root, int space = 0, int height = 10) {
         if (root != nullptr) {
             space += height;
-            displayTreap(root->l, space);
+            displayTreap(root->left, space);
             //    std::cout << "\n";
             //    for (int i = height; i < space; i++) {
             //        std::cout << ' ';
             //    }
             std::cout << root->data << "(" << root->priority << ")\n";
             //    std::cout << "\n";
-            displayTreap(root->r, space);
+            displayTreap(root->right, space);
         }
     }
 };
