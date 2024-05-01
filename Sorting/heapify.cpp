@@ -2,37 +2,38 @@
 #include <iostream>
 #include <vector>
 
-template <typename ITR>
+template <typename RAND_ACC_ITR>
+void heapify(RAND_ACC_ITR begin, RAND_ACC_ITR end, RAND_ACC_ITR current) {
 
-void heapify(ITR begin, ITR i, int sz) {
-    ITR largest;
-    auto left = std::next(begin, 2 * std::distance(begin, i) + 1);
-    auto right = std::next(begin, 2 * std::distance(begin, i) + 2);
-    if(std::distance(begin, left) <= sz && *left > begin[std::distance(begin, i)]) {
+    RAND_ACC_ITR largest;
+
+    auto left = current + std::distance(begin, current);
+    auto right = left++;
+
+    if(left < end && *left > *current) {
         largest = left;
     } else {
-        largest = i;
+        largest = current;
     }
-    if(std::distance(begin, right) <= sz && *right > *largest) {
+    if(right < end && *right > *largest) {
         largest = right;
     }
-    if(largest != i) {
-        auto tmp = i;
-        i = largest;
-        largest = tmp;
-        heapify(begin, largest, sz);
+    if(largest != current) {
+        std::swap(*largest, *current);
+        heapify(current, end, largest);
     }
 }
 
-void buildMaxHeap(std::vector<int>::iterator begin, std::vector<int>::iterator end){
-    for(auto i = begin; i != end; ++i) {
-        heapify(begin, i, (int) (end - begin));
+template <typename RAND_ACC_ITR>
+void buildMaxHeap(RAND_ACC_ITR begin, RAND_ACC_ITR end){
+    for(auto current = std::next(begin, std::distance(begin, end) / 2); current >= begin; current--) {
+        heapify(begin, end, current);
     }
 }
 
 int main() {
-    std::vector<int> vec({1, 3, 5, 4, 6, 13, 10, 9, 8, 15, 17});
-    std::cout << "\nVector to heap (custom-made):\n";
+    std::vector<int> vec{1, 3, 5, 4, 6, 13, 10, 9, 8, 15, 17};
+    std::cout << "Vector to heap (custom-made):\n";
     buildMaxHeap(vec.begin(), vec.end());
     for(int i : vec) {
         std::cout << i << " ";
