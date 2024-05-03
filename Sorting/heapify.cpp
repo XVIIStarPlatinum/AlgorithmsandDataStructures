@@ -4,19 +4,25 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <unordered_set>
 #include <vector>
 
-unsigned int randomGenerator(std::mt19937 &rng, unsigned int min, unsigned int max) {
+int randomGenerator(std::mt19937 &rng, int min, int max) {
     rng.seed(std::random_device()());
     std::uniform_int_distribution<std::mt19937::result_type> dist(min, max);
     return dist(rng);
 }
 
-std::vector<unsigned int> generate_vector(std::mt19937 &rng, unsigned int min, unsigned int max, size_t size){
-    std::vector<unsigned int> random_vector;
-    for(int i = 1; i < size; ++i) {
-        random_vector.push_back(randomGenerator(rng, min, max));
+std::vector<int> generate_vector(std::mt19937 &rng, int min, int max){
+    std::unordered_set<int> random_set;
+    size_t size = randomGenerator(rng, min, max);
+    if(size < 3) {
+        size = 3;
     }
+    while(random_set.size() != size) {
+        random_set.insert(randomGenerator(rng, min, max));
+    }
+    std::vector<int> random_vector(random_set.begin(), random_set.end());
     return random_vector;
 }
 
@@ -25,16 +31,15 @@ void heapify(RandomAccessIterator begin, RandomAccessIterator end, RandomAccessI
 
     RandomAccessIterator largest = current;
 
-    auto child1 = current + std::distance(begin, current);
-    auto child2 = child1++;
+    auto left_child = current + std::distance(begin, current) + 1;
+    auto right_child = left_child++;
 
-    if(child1 < end && *current < *child1) {
-        largest = child1;
-    } else {
-        largest = current;
+    if(left_child < end && *current < *left_child) {
+        largest = left_child;
     }
-    if(child2 < end && *largest < *child2) {
-        largest = child2;
+
+    if(right_child < end && *largest < *right_child) {
+        largest = right_child;
     }
     if(largest != current) {
         std::swap(*current, *largest);
@@ -44,18 +49,19 @@ void heapify(RandomAccessIterator begin, RandomAccessIterator end, RandomAccessI
 
 template <typename RandomAccessIterator>
 void buildMaxHeap(RandomAccessIterator begin, RandomAccessIterator end){
-    for(auto current = std::next(begin, std::distance(begin, end) / 2) - 1; current >= begin; --current) {
+    for(auto current = begin + std::distance(begin, end) / 2; current >= begin; --current) {
         heapify(begin, end, current);
     }
 }
-void test_heapify(std::mt19937 &rng, unsigned int min, unsigned int max, size_t size) {
+void test_heapify(std::mt19937 &rng, int min, int max) {
     const char* path = R"(D:\ITMOrbius\A&DS_XVIIstarPt_\Sorting\test_results.csv)";
     std::ofstream result_file;
     result_file.open(path, std::ios::in | std::ios::app);
-    std::vector<unsigned int> vec1 = generate_vector(rng, min, max, size);
+    std::vector<int> vec1 = generate_vector(rng, min, max);
+    std::vector<int> vec2 = vec1;
     std::cout << "Randomly generated vector before being heapified:\n";
     result_file << "Before\n";
-    for(unsigned int i : vec1) {
+    for(int i : vec1) {
         std::cout << i << " ";
         result_file << i << ",";
     }
@@ -66,7 +72,7 @@ void test_heapify(std::mt19937 &rng, unsigned int min, unsigned int max, size_t 
     buildMaxHeap(vec1.begin(), vec1.end());
     const auto end1 {std::chrono::steady_clock::now()};
     const std::chrono::duration<double> time_custom{end1 - start1};
-    for(unsigned int i : vec1) {
+    for(int i : vec1) {
         std::cout << i << " ";
         result_file << i << ",";
     }
@@ -76,9 +82,9 @@ void test_heapify(std::mt19937 &rng, unsigned int min, unsigned int max, size_t 
     std::cout << "\nVector to heap (make_heap):\n";
     result_file << "make_heap()\n";
     const auto start2 {std::chrono::steady_clock::now()};
-    std::make_heap(vec1.begin(), vec1.end());
+    std::make_heap(vec2.begin(), vec2.end());
     const auto end2 {std::chrono::steady_clock::now()};
-    for (unsigned int i : vec1) {
+    for (int i : vec2) {
         std::cout << i << " ";
         result_file << i << ",";
     }
@@ -94,8 +100,8 @@ int main() {
     std::random_device dev;
     std::mt19937 rng(dev());
     for(int i = 1; i <= 3; ++i) {
-        std::cout << "TEST " << i << std::string(60, '=') << "\n";
-        test_heapify(rng, 5, 25, 25);
+        std::cout << "TEST " << i << std::string(100, '=') << "\n";
+        test_heapify(rng, 1, 20);
     }
     return 0;
 }
