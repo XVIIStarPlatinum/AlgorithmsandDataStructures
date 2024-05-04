@@ -22,8 +22,16 @@ std::vector<int> generate_vector(std::mt19937 &rng, int min, int max){
     while(random_set.size() != size) {
         random_set.insert(randomGenerator(rng, min, max));
     }
-    std::vector<int> random_vector(random_set.begin(), random_set.end());
-    return random_vector;
+    return {random_set.begin(), random_set.end()};
+}
+
+template <typename RandomAccessIterator>
+void output_vector(std::ostream& output_file, RandomAccessIterator begin, RandomAccessIterator end) {
+    for(auto i = begin; i != end; ++i){
+        std::cout << *i << " ";
+        output_file << *i << ",";
+    }
+    std::cout << "\n";
 }
 
 template <typename RandomAccessIterator>
@@ -32,7 +40,7 @@ void heapify(RandomAccessIterator begin, RandomAccessIterator end, RandomAccessI
     RandomAccessIterator largest = current;
 
     auto left_child = current + std::distance(begin, current) + 1;
-    auto right_child = left_child++;
+    auto right_child = left_child + 1;
 
     if(left_child < end && *current < *left_child) {
         largest = left_child;
@@ -57,37 +65,31 @@ void test_heapify(std::mt19937 &rng, int min, int max) {
     const char* path = R"(D:\ITMOrbius\A&DS_XVIIstarPt_\Sorting\test_results.csv)";
     std::ofstream result_file;
     result_file.open(path, std::ios::in | std::ios::app);
-    std::vector<int> vec1 = generate_vector(rng, min, max);
-    std::vector<int> vec2 = vec1;
+
+    auto vec1 = generate_vector(rng, min, max);
+    auto vec2 = vec1;
+
     std::cout << "Randomly generated vector before being heapified:\n";
     result_file << "Before\n";
-    for(int i : vec1) {
-        std::cout << i << " ";
-        result_file << i << ",";
-    }
+    output_vector(result_file, vec1.begin(), vec1.end());
     result_file << "\n";
+
     std::cout << "\nVector to heap (custom-made):\n";
     result_file << "buildMaxHeap()\n";
     const auto start1{std::chrono::steady_clock::now()};
     buildMaxHeap(vec1.begin(), vec1.end());
     const auto end1 {std::chrono::steady_clock::now()};
     const std::chrono::duration<double> time_custom{end1 - start1};
-    for(int i : vec1) {
-        std::cout << i << " ";
-        result_file << i << ",";
-    }
-    std::cout << "\nElapsed time for custom function: " << time_custom.count();
+    output_vector(result_file, vec1.begin(), vec1.end());
+    std::cout << "\nElapsed time for custom function: " << time_custom.count() << "\n";
     result_file << "\nT1," << time_custom.count() << "\n";
-//    std::vector<int> vec2 = vec1;
+
     std::cout << "\nVector to heap (make_heap):\n";
     result_file << "make_heap()\n";
     const auto start2 {std::chrono::steady_clock::now()};
     std::make_heap(vec2.begin(), vec2.end());
     const auto end2 {std::chrono::steady_clock::now()};
-    for (int i : vec2) {
-        std::cout << i << " ";
-        result_file << i << ",";
-    }
+    output_vector(result_file, vec2.begin(), vec2.end());
     const std::chrono::duration<double> time_lib{end2 - start2};
     std::cout << "\nElapsed time for make_heap(): " << time_lib.count() << "\n";
     result_file << "\nT2," << time_lib.count() << "\n";
