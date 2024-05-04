@@ -38,9 +38,16 @@ template <typename RandomAccessIterator>
 void heapify(RandomAccessIterator begin, RandomAccessIterator end, RandomAccessIterator current) {
 
     RandomAccessIterator largest = current;
-
-    auto left_child = current + std::distance(begin, current) + 1;
+    auto left_child = current + std::distance(begin, current);
     auto right_child = left_child + 1;
+
+    if (std::distance(current, end - 1) >= std::distance(begin, current)) {
+        left_child = end;
+    }
+
+    if(std::distance(current, end - 1) >= std::distance(begin, current)) {
+        right_child = end;
+    }
 
     if(left_child < end && *current < *left_child) {
         largest = left_child;
@@ -60,6 +67,21 @@ void buildMaxHeap(RandomAccessIterator begin, RandomAccessIterator end){
     for(auto current = begin + std::distance(begin, end) / 2; current >= begin; --current) {
         heapify(begin, end, current);
     }
+}
+
+template <typename RandomAccessIterator>
+bool check_heap(RandomAccessIterator begin, RandomAccessIterator end) {
+    for(auto current = begin; current <= begin + (std::distance(begin+1, end)) / 2; ++current) {
+        auto left_child = current + std::distance(begin, current);
+        auto right_child = left_child + 1;
+        if (*left_child > *current){
+            return false;
+        }
+        if (right_child < end && *right_child > *current) {
+            return false;
+        }
+    }
+    return true;
 }
 void test_heapify(std::mt19937 &rng, int min, int max) {
     const char* path = R"(D:\ITMOrbius\A&DS_XVIIstarPt_\Sorting\test_results.csv)";
@@ -81,19 +103,21 @@ void test_heapify(std::mt19937 &rng, int min, int max) {
     const auto end1 {std::chrono::steady_clock::now()};
     const std::chrono::duration<double> time_custom{end1 - start1};
     output_vector(result_file, vec1.begin(), vec1.end());
+    assert(std::is_heap(vec1.begin(), vec1.end()) && "Вектор не является кучей.");
     std::cout << "\nElapsed time for custom function: " << time_custom.count() << "\n";
     result_file << "\nT1," << time_custom.count() << "\n";
 
-    std::cout << "\nVector to heap (make_heap):\n";
+    std::cout << "\nVector to heap (stdlib):\n";
     result_file << "make_heap()\n";
-    const auto start2 {std::chrono::steady_clock::now()};
+    const auto start2{std::chrono::steady_clock::now()};
     std::make_heap(vec2.begin(), vec2.end());
-    const auto end2 {std::chrono::steady_clock::now()};
-    output_vector(result_file, vec2.begin(), vec2.end());
+    const auto end2{std::chrono::steady_clock::now()};
     const std::chrono::duration<double> time_lib{end2 - start2};
-    std::cout << "\nElapsed time for make_heap(): " << time_lib.count() << "\n";
-    result_file << "\nT2," << time_lib.count() << "\n";
-//    assert(vec1 == vec2 && "Функция не прошла тестирование.");
+    output_vector(result_file, vec2.begin(), vec2.end());
+    assert(std::is_heap(vec2.begin(), vec2.end()) && "Вектор не является кучей.");
+    std::cout << "\nElapsed time for custom function: " << time_lib.count() << "\n";
+    result_file << "\nT1," << time_lib.count() << "\n";
+
     result_file.flush();
     result_file.close();
 }
@@ -101,7 +125,7 @@ void test_heapify(std::mt19937 &rng, int min, int max) {
 int main() {
     std::random_device dev;
     std::mt19937 rng(dev());
-    for(int i = 1; i <= 3; ++i) {
+    for(int i = 1; i <= 100; ++i) {
         std::cout << "TEST " << i << std::string(100, '=') << "\n";
         test_heapify(rng, 1, 20);
     }
