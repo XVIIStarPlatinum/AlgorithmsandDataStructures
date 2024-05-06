@@ -41,14 +41,6 @@ void heapify(RandomAccessIterator begin, RandomAccessIterator end, RandomAccessI
     auto left_child = current + std::distance(begin, current);
     auto right_child = left_child + 1;
 
-    if (std::distance(current, end - 1) >= std::distance(begin, current)) {
-        left_child = end;
-    }
-
-    if(std::distance(current, end - 1) >= std::distance(begin, current)) {
-        right_child = end;
-    }
-
     if(left_child < end && *current < *left_child) {
         largest = left_child;
     }
@@ -63,7 +55,7 @@ void heapify(RandomAccessIterator begin, RandomAccessIterator end, RandomAccessI
 }
 
 template <typename RandomAccessIterator>
-void buildMaxHeap(RandomAccessIterator begin, RandomAccessIterator end){
+void buildMaxHeap(RandomAccessIterator begin, RandomAccessIterator end) {
     for(auto current = begin + std::distance(begin, end) / 2; current >= begin; --current) {
         heapify(begin, end, current);
     }
@@ -71,7 +63,7 @@ void buildMaxHeap(RandomAccessIterator begin, RandomAccessIterator end){
 
 template <typename RandomAccessIterator>
 bool check_heap(RandomAccessIterator begin, RandomAccessIterator end) {
-    for(auto current = begin; current <= begin + (std::distance(begin+1, end)) / 2; ++current) {
+    for(auto current = begin; current <= begin + (std::distance(begin, end)) / 2; ++current) {
         auto left_child = current + std::distance(begin, current);
         auto right_child = left_child + 1;
         if (*left_child > *current){
