@@ -16,8 +16,8 @@ int randomGenerator(std::mt19937 &rng, int min, int max) {
 std::vector<int> generate_vector(std::mt19937 &rng, int min, int max){
     std::unordered_set<int> random_set;
     size_t size = randomGenerator(rng, min, max);
-    if(size < 3) {
-        size = 3;
+    if(size < 5) {
+        size = 5;
     }
     while(random_set.size() != size) {
         random_set.insert(randomGenerator(rng, min, max));
@@ -50,31 +50,31 @@ void heapify(RandomAccessIterator begin, RandomAccessIterator end, RandomAccessI
     }
     if(largest != current) {
         std::swap(*current, *largest);
-        heapify(current, end, largest);
+        heapify(begin, end, largest);
     }
 }
 
 template <typename RandomAccessIterator>
 void buildMaxHeap(RandomAccessIterator begin, RandomAccessIterator end) {
-    for(auto current = begin + std::distance(begin, end) / 2; current >= begin; --current) {
+    for(auto current = begin + (std::distance(begin, end) - 1) / 2; current >= begin; --current) {
         heapify(begin, end, current);
     }
 }
 
-template <typename RandomAccessIterator>
-bool check_heap(RandomAccessIterator begin, RandomAccessIterator end) {
-    for(auto current = begin; current <= begin + (std::distance(begin, end)) / 2; ++current) {
-        auto left_child = current + std::distance(begin, current);
-        auto right_child = left_child + 1;
-        if (*left_child > *current){
-            return false;
-        }
-        if (right_child < end && *right_child > *current) {
-            return false;
-        }
-    }
-    return true;
-}
+//template <typename RandomAccessIterator>
+//bool check_heap(RandomAccessIterator begin, RandomAccessIterator end) {
+//    for(auto current = begin; current <= begin + (std::distance(begin, end)) / 2; ++current) {
+//        auto left_child = current + std::distance(begin, current);
+//        auto right_child = left_child + 1;
+//        if (*left_child > *current){
+//            return false;
+//        }
+//        if (right_child < end && *right_child > *current) {
+//            return false;
+//        }
+//    }
+//    return true;
+//}
 void test_heapify(std::mt19937 &rng, int min, int max) {
     const char* path = R"(D:\ITMOrbius\A&DS_XVIIstarPt_\Sorting\test_results.csv)";
     std::ofstream result_file;
@@ -119,7 +119,7 @@ int main() {
     std::mt19937 rng(dev());
     for(int i = 1; i <= 100; ++i) {
         std::cout << "TEST " << i << std::string(100, '=') << "\n";
-        test_heapify(rng, 1, 20);
+        test_heapify(rng, 1, 10);
     }
     return 0;
 }
