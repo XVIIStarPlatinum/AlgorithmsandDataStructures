@@ -4,4 +4,4 @@ project(Graph_algorithms)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(Graph_algorithms
-        "Task M/Civilization.cpp")
+        "Timus-VII(1160)/Problem1160.cpp")
